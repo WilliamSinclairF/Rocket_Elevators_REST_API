@@ -1,0 +1,5 @@
+really really important - how to generate a scaffold for db context and models:
+
+Scaffold-DbContext [CONNECTION_STRING] Pomelo.EntityFrameworkCore.MySql -OutputDir [OUTPUT DIRECTORY] -Context [NAME OF CONTEXT CLASS] -f
+
+I used: Scaffold-DbContext "server=localhost;port=3306;database=app_development;uid=YOUR_USERNAME;password=A_VERY_SECURE_PASSWORD" Pomelo.EntityFrameworkCore.MySql -OutputDir Models -Context App -f
