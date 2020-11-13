@@ -7,11 +7,12 @@ The API was made to answer specific questions and perform certain tasks. It has 
 ## Required Endpoints
 
 - Retrieving the current status of a specific Battery
-  GET /api/batteries/status/{id}
+
+  - GET /api/batteries/status/{id}
 
 - Changing the status of a specific Battery
-  PUT /api/batteries/status/{id}
-  request body:
+  - PUT /api/batteries/status/{id}
+  - request body:
 
 ```javascript
 {
@@ -21,11 +22,12 @@ The API was made to answer specific questions and perform certain tasks. It has 
 ```
 
 - Retrieving the current status of a specific Column
-  GET /api/columns/status/{id}
+
+  - GET /api/columns/status/{id}
 
 - Changing the status of a specific Column
-  PUT /api/columns/status/{id}
-  request body:
+  - PUT /api/columns/status/{id}
+  - request body:
 
 ```javascript
 {
@@ -35,11 +37,12 @@ The API was made to answer specific questions and perform certain tasks. It has 
 ```
 
 - Retrieving the current status of a specific Elevator
-  GET /api/elevators/status/{id}
+
+  - GET /api/elevators/status/{id}
 
 - Changing the status of a specific Elevator
-  PUT /api/elevators/status/{id}
-  request body:
+  - PUT /api/elevators/status/{id}
+  - request body:
 
 ```javascript
 {
@@ -49,10 +52,12 @@ The API was made to answer specific questions and perform certain tasks. It has 
 ```
 
 - Retrieving a list of Elevators that are not in operation at the time of the request
-  GET /api/elevators/oos
+
+  - GET /api/elevators/oos
 
 - Retrieving a list of Buildings that contain at least one battery, column or elevator requiring intervention
-  GET /api/buildings/interventions
+
+  - GET /api/buildings/interventions
 
 - Retrieving a list of Leads created in the last 30 days who have not yet become customers.
-  GET /api/leads/outstanding
+  - GET /api/leads/outstanding
