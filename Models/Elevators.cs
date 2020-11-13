@@ -19,4 +19,10 @@ namespace Rocket_REST_API.Models
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
     }
+
+    public class ElevatorDTO
+    {
+        public long Id { get; set; }
+        public string ElevatorStatus { get; set; }
+    }
 }

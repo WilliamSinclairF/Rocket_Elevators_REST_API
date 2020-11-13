@@ -1,11 +1,9 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Rocket_REST_API.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Rocket_REST_API.Models;
 
 namespace Rocket_REST_API.Controllers
 {
@@ -27,6 +25,16 @@ namespace Rocket_REST_API.Controllers
             return await _context.Elevators.ToListAsync();
         }
 
+        // GET: api/Elevators/oos
+        [HttpGet("oos")]
+        public async Task<ActionResult<IEnumerable<Elevators>>> GetOOSElevators()
+        {
+            var outOfServiceElevators = await _context.Elevators
+        .Where(e => !e.ElevatorStatus.Contains("ACTIVE"))
+        .ToListAsync();
+            return outOfServiceElevators;
+        }
+
         // GET: api/Elevators/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Elevators>> GetElevators(long id)
@@ -39,6 +47,66 @@ namespace Rocket_REST_API.Controllers
             }
 
             return elevators;
+        }
+
+        // Get the status of an elevator
+        [HttpGet("status/{id}")]
+        public async Task<ActionResult<ElevatorDTO>> GetElevatorStatus(long id)
+        {
+            var elevator = await _context.Elevators.Select(e =>
+            new ElevatorDTO()
+            {
+                Id = e.Id,
+                ElevatorStatus = e.ElevatorStatus
+            })
+            .SingleOrDefaultAsync(e => e.Id == id);
+
+            if (elevator == null)
+            {
+                return NotFound();
+            }
+
+            return elevator;
+        }
+
+        // Change the status of an elevator
+        // PUT: api/Elevators/status/5
+        // request body in json must include "Id" and "ElevatorStatus"
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
+        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+        [HttpPut("status/{id}")]
+        public async Task<IActionResult> ChangeElevatorStatus(long id, ElevatorDTO elevatorDTO)
+        {
+            if (id != elevatorDTO.Id)
+            {
+                return BadRequest();
+            }
+
+            var elevator = await _context.Elevators.FindAsync(id);
+            if (elevator == null)
+            {
+                return NotFound();
+            }
+
+            elevator.ElevatorStatus = elevatorDTO.ElevatorStatus;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ElevatorsExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
         // PUT: api/Elevators/5

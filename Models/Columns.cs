@@ -15,4 +15,10 @@ namespace Rocket_REST_API.Models
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
     }
+
+    public class ColumnDTO
+    {
+        public long Id { get; set; }
+        public string ColumnStatus { get; set; }
+    }
 }

@@ -41,6 +41,66 @@ namespace Rocket_REST_API.Controllers
             return columns;
         }
 
+        // Get the status of a column
+        [HttpGet("status/{id}")]
+        public async Task<ActionResult<ColumnDTO>> GetColumnStatus(long id)
+        {
+            var column = await _context.Columns.Select(c =>
+            new ColumnDTO()
+            {
+                Id = c.Id,
+                ColumnStatus = c.ColumnStatus
+            })
+            .SingleOrDefaultAsync(c => c.Id == id);
+
+            if (column == null)
+            {
+                return NotFound();
+            }
+
+            return column;
+        }
+
+        // Change the status of a column
+        // PUT: api/Columns/status/5
+        // request body in json must include "Id" and "ColumnStatus"
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
+        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+        [HttpPut("status/{id}")]
+        public async Task<IActionResult> ChangeColumnStatus(long id, ColumnDTO columnDTO)
+        {
+            if (id != columnDTO.Id)
+            {
+                return BadRequest();
+            }
+
+            var column = await _context.Columns.FindAsync(id);
+            if (column == null)
+            {
+                return NotFound();
+            }
+
+            column.ColumnStatus = columnDTO.ColumnStatus;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ColumnsExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
         // PUT: api/Columns/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.

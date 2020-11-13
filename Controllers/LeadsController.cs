@@ -27,6 +27,13 @@ namespace Rocket_REST_API.Controllers
             return await _context.Leads.ToListAsync();
         }
 
+        // GET: api/Leads/oustanding
+        [HttpGet ("outstanding")]
+        public async Task<ActionResult<IEnumerable<Leads>>> GetOutstandingLeads()
+        {
+            return await _context.Leads.Where(l => !_context.Users.Any(u => u.Id == l.UserId) && l.CreatedAt >= DateTime.UtcNow.AddDays(-30)).ToListAsync();
+        }
+
         // GET: api/Leads/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Leads>> GetLeads(long id)

@@ -27,6 +27,52 @@ namespace Rocket_REST_API.Controllers
             return await _context.Buildings.ToListAsync();
         }
 
+        // GET: api/Buildings/interventions
+        [HttpGet("interventions")]
+        public async Task<IEnumerable<BuildingDTO>> GetBuildingsWithInterventions()
+        {
+            var buildings = await (from building in _context.Buildings
+                                   join battery in _context.Batteries on building.Id equals battery.BuildingId
+                                   join column in _context.Columns on battery.Id equals column.BatteryId
+                                   join elevator in _context.Elevators on column.Id equals elevator.ColumnId
+                                   select new BuildingDTO
+                                   {
+                                       BuildingId = building.Id,
+                                       Batteries = (List<Batteries>)_context.Batteries
+                                   .Where(b => b.BuildingId == building.Id && b.BatteryStatus != "ACTIVE"),
+                                       Columns = (List<Columns>)_context.Columns
+                                   .Where(c => c.BatteryId == battery.Id && c.ColumnStatus != "ACTIVE"),
+                                       Elevators = (List<Elevators>)_context.Elevators
+                                   .Where(e => e.ColumnId == column.Id && e.ElevatorStatus != "ACTIVE"),
+                                   })
+                                   .Distinct()
+                                   .ToListAsync();
+
+            foreach (BuildingDTO b in buildings.ToList())
+            {
+                var countTo3 = 0;
+                if (!b.Batteries.Any()) {
+                    countTo3++;
+                }
+                if (!b.Columns.Any())
+                {
+                    countTo3++;
+                }
+                if (!b.Elevators.Any())
+                {
+                    countTo3++;
+                }
+                if (countTo3 == 3)
+                {
+                    buildings.Remove(b);
+                }
+            }
+
+            return buildings;
+
+        }
+
+
         // GET: api/Buildings/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Buildings>> GetBuildings(long id)

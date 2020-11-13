@@ -18,4 +18,10 @@ namespace Rocket_REST_API.Models
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
     }
+
+    public class BatteryDTO
+    {
+        public long Id { get; set; }
+        public string BatteryStatus { get; set; }
+    }
 }

@@ -41,6 +41,67 @@ namespace Rocket_REST_API.Controllers
             return batteries;
         }
 
+
+        // Get the status of a battery
+        [HttpGet("status/{id}")]
+        public async Task<ActionResult<BatteryDTO>> GetBatteryStatus(long id)
+        {
+            var battery = await _context.Batteries.Select(b =>
+            new BatteryDTO()
+            {
+                Id = b.Id,
+                BatteryStatus = b.BatteryStatus
+            })
+            .SingleOrDefaultAsync(b => b.Id == id);
+
+            if (battery == null)
+            {
+                return NotFound();
+            }
+
+            return battery;
+        }
+
+        // Change the status of a battery
+        // PUT: api/Batteries/status/5
+        // request body in json must include "Id" and "BatteryStatus"
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
+        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+        [HttpPut("status/{id}")]
+        public async Task<IActionResult> ChangeBatteryStatus(long id, BatteryDTO batteryDTO)
+        {
+            if (id != batteryDTO.Id)
+            {
+                return BadRequest();
+            }
+
+            var battery = await _context.Batteries.FindAsync(id);
+            if (battery == null)
+            {
+                return NotFound();
+            }
+
+            battery.BatteryStatus = batteryDTO.BatteryStatus;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!BatteriesExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
         // PUT: api/Batteries/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.

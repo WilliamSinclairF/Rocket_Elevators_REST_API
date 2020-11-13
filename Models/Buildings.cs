@@ -30,5 +30,16 @@ namespace Rocket_REST_API.Models
         public virtual Employees TechnicalContact { get; set; }
         public virtual ICollection<Addresses> Addresses { get; set; }
         public virtual ICollection<BuildingDetails> BuildingDetails { get; set; }
+
+
+    }
+
+    public class BuildingDTO
+    {
+        public long BuildingId { get; set; }
+        public Addresses Address { get; set; }
+        public List<Elevators> Elevators { get; set; }
+        public List<Columns> Columns { get; set; }
+        public List<Batteries> Batteries { get; set; }
     }
 }
